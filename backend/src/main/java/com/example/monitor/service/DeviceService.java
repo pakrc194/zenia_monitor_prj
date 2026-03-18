@@ -18,4 +18,12 @@ public class DeviceService {
 	public List<DeviceDTO> list(PageRequest pageReq) {
 		return deviceMapper.list(pageReq);
 	}
+	
+	public DeviceDTO detail(DeviceDTO dto) {
+		return deviceMapper.detail(dto);
+	}
+	
+	public List<DeviceDTO> findAllByDeviceId(DeviceDTO dto) {
+		return deviceMapper.findAllByDeviceId(dto.getDeviceId());
+	}
 }

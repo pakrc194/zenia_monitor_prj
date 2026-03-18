@@ -1,12 +1,23 @@
 import StatCard from "../components/StatCard";
 import HourlyChart from "../components/HourlyChart";
 import { SUMMARY, ALARMS, DEVICES } from "../data/mockData";
-
-const STATUS_LABEL = { ok: "정상", ng: "NG 발생", warn: "경고", idle: "유휴" };
-const STATUS_COLOR = { ok: "var(--ok-color)", ng: "var(--ng-color)", warn: "var(--warn-color)", idle: "var(--text-muted)" };
+import { useEffect, useState } from "react";
+import api from "../data/api";
+import { STATUS_LABEL } from "../utils/constants";
 
 export default function Dashboard() {
   const recentAlarms = ALARMS.slice(0, 5);
+
+  const [deviceList, setDeviceList] = useState([]);
+
+  useEffect(()=>{
+    const fecthDeviceList = async () => {
+      const response = await api.get("/device/list")
+      // console.log(response)
+      setDeviceList(response)
+    }
+    fecthDeviceList();
+  },[])
 
   return (
     <div className="page">
@@ -23,13 +34,13 @@ export default function Dashboard() {
         <StatCard
           icon="◈"
           label="전체 장비"
-          value={SUMMARY.devices}
+          value={deviceList.length}
           color="var(--accent-cyan)"
-          sub={`운영 중 ${DEVICES.filter(d => d.status !== "idle").length}대`}
+          sub={`운영 중 ${deviceList.filter(d => d.status !== "idle").length}대`}
         />
         <StatCard
           icon="◉"
-          label="NG 장비"
+          label="위험 장비"
           value={SUMMARY.ng}
           color="var(--ng-color)"
           sub="즉시 확인 필요"
@@ -70,7 +81,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {DEVICES.map(d => (
+              {deviceList.map(d => (
                 <tr key={d.id}>
                   <td>
                     <div style={{ fontWeight: 500 }}>{d.name}</div>

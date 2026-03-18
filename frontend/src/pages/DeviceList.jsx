@@ -3,8 +3,8 @@ import { DEVICES } from "../data/mockData";
 import api from "../data/api";
 import { formatDate } from "../utils/formatDate";
 import { useNavigate } from "react-router-dom";
+import { STATUS_LABEL } from "../utils/constants";
 
-const STATUS_LABEL = { NORMAL: "정상", WARNING: "경고", IDLE: "유휴" };
 const FILTER_OPTIONS = ["전체", "정상", "경고", "유휴"];
 
 export default function DeviceList() {
@@ -16,7 +16,7 @@ export default function DeviceList() {
   useEffect(()=>{
     const fecthDeviceList = async () => {
       const response = await api.get("/device/list")
-      console.log(response)
+      // console.log(response)
       setDeviceList(response)
     }
     fecthDeviceList();
@@ -37,14 +37,14 @@ export default function DeviceList() {
 
       {/* Summary badges */}
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-        {Object.entries({ NORMAL: "정상", WARNING: "경고", IDLE: "유휴" }).map(([k, v]) => {
+        {Object.entries({ NORMAL: "정상", WARNING: "경고", ERROR: "위험", IDLE: "유휴" }).map(([k, v]) => {
           const count = deviceList?.filter(d => d.status === k).length;
           return (
             <div key={k} className="card" style={{ padding: "12px 16px", flex: 1 }}>
               <div className="stat-label">{v}</div>
               <div style={{ fontFamily: "var(--font-mono)", fontSize: 26, color:
                 k === "NORMAL" ? "var(--ok-color)" :
-                k === "ng" ? "var(--ng-color)" :
+                k === "ERROR" ? "var(--ng-color)" :
                 k === "WARNING" ? "var(--warn-color)" : "var(--text-muted)"
               }}>{count}</div>
             </div>

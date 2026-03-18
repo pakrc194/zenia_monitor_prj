@@ -23,4 +23,14 @@ public class DeviceController {
 	List<DeviceDTO> deviceList(@ModelAttribute PageRequest pageReq) {
 		return deviceService.list(pageReq);
 	}
+	
+	@GetMapping("/detail/{deviceId}")
+	DeviceDTO deviceDetail(@ModelAttribute DeviceDTO dto) {
+		return deviceService.detail(dto);
+	}
+	
+	@GetMapping("/status/list/{deviceId}")
+	List<DeviceDTO> statusList(@ModelAttribute DeviceDTO dto) {
+		return deviceService.findAllByDeviceId(dto);
+	}
 }

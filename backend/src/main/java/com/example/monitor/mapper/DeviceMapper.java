@@ -18,4 +18,18 @@ public interface DeviceMapper {
 			join device d on ds.device_id = d.id
 			""")
 	List<DeviceDTO> list(PageRequest pageReq);
+	
+	@Select("""
+			select * from device where id = #{deviceId}
+			""")
+	DeviceDTO detail(DeviceDTO dto);
+	
+	
+	@Select("""
+			select d.*,
+			ds.device_id, ds.cpu_usage, ds.memory_usage, 
+			ds.temperature, ds.status, ds.created_at as status_at  
+			from device d join device_status ds on d.id = ds.device_id where ds.device_id = #{deviceId}
+			""")
+	List<DeviceDTO> findAllByDeviceId(int deviceId);
 }

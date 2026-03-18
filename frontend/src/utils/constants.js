@@ -1,0 +1,1 @@
+export const STATUS_LABEL = { ok: "정상", ng: "NG 발생", warn: "경고", idle: "유휴" };
