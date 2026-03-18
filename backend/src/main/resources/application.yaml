@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PW}
+  config:
+    import: optional:file:.env[.properties]
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
