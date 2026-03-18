@@ -1,26 +1,81 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { INSPECTIONS_BY_DEVICE, DEVICES } from "../data/mockData";
 import DonutChart from "../components/DonutChart";
+import api from "../data/api";
 
-const DEVICE_OPTIONS = [
-  { value: "전체", label: "전체 장비" },
-  ...DEVICES.map(d => ({ value: d.id, label: d.name })),
-];
+const processInspectionData = (list) => {
+  const map = {};
+
+  list.forEach(item => {
+    // 장비 없으면 초기화
+    if (!map[item.name]) {
+      map[item.name] = {
+        deviceId: item.deviceId,
+        name: item.name,
+        ok: 0, ng: 0,
+        Scratch: 0, Dust: 0, Hole: 0, Crack: 0,
+      };
+    }
+
+    if (item.result === "OK") {
+      map[item.name].ok = item.count;
+    } else if (item.result === "NG") {
+      map[item.name].ng += item.count;
+      if (item.defectType) {
+        map[item.name][item.defectType] = item.count;
+      }
+    }
+  });
+
+  console.log(Object.values(map))
+  return Object.values(map);
+};
 
 export default function Inspection() {
   const navigate = useNavigate();
-  const [selectedDevice, setSelectedDevice] = useState("전체");
+  const [selectedDevice, setSelectedDevice] = useState(1);
+  const [deviceList, setDeviceList] = useState([])
+  const [inspectionData, setInspectionData] = useState([])
+  const [loading, setLoading] = useState(true);
+  
 
-  const stats = INSPECTIONS_BY_DEVICE[selectedDevice] || { ok: 0, ng: 0 };
+  useEffect(()=>{
+    const fecthDeviceList = async () => {
+      const response = await api.get("/device/list")
+      setDeviceList([
+        ...response.map(d=> ({value:d.deviceId, label: d.name}))
+      ])
+    }
+    const fecthInspection = async () => {
+      const response = await api.get("/inspection/status")
+      setInspectionData(processInspectionData(response));
+      setLoading(false); 
+    }
+    fecthDeviceList();
+    fecthInspection();
+    
+  },[])
+
+  if (loading) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60vh" }}>
+      <div style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-muted)", letterSpacing: "0.1em" }}>
+        LOADING...
+      </div>
+    </div>
+  );
+
+
+
+  const stats = inspectionData.find(d=>d.deviceId==selectedDevice) || { ok: 0, ng: 0 };
   const total = stats.ok + stats.ng;
   const okRate = total ? (stats.ok / total * 100).toFixed(1) : "0.0";
   const ngRate = total ? (stats.ng / total * 100).toFixed(1) : "0.0";
 
-  const deviceNg = DEVICES.map(d => {
-    const s = INSPECTIONS_BY_DEVICE[d.id] || { ok: 0, ng: 0 };
+  const deviceNg = inspectionData.map(d => {
+    const s = inspectionData.find(dd=>dd.deviceId==d.deviceId) || { ok: 0, ng: 0 };
     const t = s.ok + s.ng;
-    return { id: d.id, name: d.name, ng: s.ng, total: t, ngRate: t ? (s.ng / t * 100).toFixed(1) : "0.0" };
+    return { id: d.deviceId, name: d.name, ng: s.ng, total: t, ngRate: t ? (s.ng / t * 100).toFixed(1) : "0.0" };
   });
   const maxNg = Math.max(...deviceNg.map(d => d.ng), 1);
 
@@ -36,7 +91,7 @@ export default function Inspection() {
           <div className="section-header">
             <span className="section-title">OK / NG 비율</span>
             <select className="select-input" value={selectedDevice} onChange={e => setSelectedDevice(e.target.value)}>
-              {DEVICE_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              {deviceList.map((o,k )=> <option key={`${k}-${o.value}`} value={o.value}>{o.label}</option>)}
             </select>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
@@ -91,8 +146,8 @@ export default function Inspection() {
             </tr>
           </thead>
           <tbody>
-            {deviceNg.map(d => (
-              <tr key={d.id} style={{ cursor: "pointer" }} onClick={() => navigate(`/inspection/${d.id}`)}>
+            {deviceNg.map((d, k) => (
+              <tr key={`${k}-${d.id}`} style={{ cursor: "pointer" }} onClick={() => navigate(`/inspection/${d.id}`)}>
                 <td>
                   <span style={{ fontWeight: 500 }}>{d.name}</span>
                   <span className="mono" style={{ marginLeft: 8, fontSize: 10 }}>{d.id}</span>

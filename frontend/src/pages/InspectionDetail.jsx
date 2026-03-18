@@ -1,12 +1,24 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { DEVICES, INSPECTIONS_BY_DEVICE, ALARMS } from "../data/mockData";
 import DonutChart from "../components/DonutChart";
+import { useEffect, useState } from "react";
+import api from "../data/api";
 
 export default function InspectionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [device, setDevice] = useState({})
 
-  const device = DEVICES.find(d => d.id === id);
+  useEffect(()=>{
+    const fetchDeviceDetail = async() => {
+        const response = await api.get(`/device/detail/${id}`)
+        setDevice(response)
+    }
+
+    fetchDeviceDetail();
+  },[])
+
+  //const device = DEVICES.find(d => d.id === id);
   const stats = INSPECTIONS_BY_DEVICE[id] || { ok: 0, ng: 0 };
   const total = stats.ok + stats.ng;
   const okRate = total ? (stats.ok / total * 100).toFixed(1) : "0.0";

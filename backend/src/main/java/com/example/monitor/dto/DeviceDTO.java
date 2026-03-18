@@ -13,4 +13,6 @@ public class DeviceDTO {
 	double cpuUsage, memoryUsage, temperature;
 	String status;
 	Date statusAt;
+	
+	
 }

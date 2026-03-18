@@ -1,1 +1,1 @@
-export const STATUS_LABEL = { ok: "정상", ng: "NG 발생", warn: "경고", idle: "유휴" };
+export const STATUS_LABEL = { NORMAL: "정상", WARNING: "경고", ERROR: "위험",IDLE: "유휴" };
