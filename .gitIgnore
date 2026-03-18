@@ -1,0 +1,23 @@
+# ─── 공통 ───────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Frontend (React) ────────────────
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.*
+
+# ─── Backend (Spring Boot) ───────────
+backend/.gradle/
+backend/build/
+backend/out/
+backend/*.jar
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application.yml
+
+# ─── IDE ────────────────────────────
+.idea/
+*.iml
+.vscode/
