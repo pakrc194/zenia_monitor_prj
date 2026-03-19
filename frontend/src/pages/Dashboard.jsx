@@ -100,7 +100,7 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {deviceList.map((d,k) => (
-                <tr key={k} onClick={() => navigate(`/devices/${d.deviceId}`)}>
+                <tr key={k} style={{ cursor: "pointer" }} onClick={() => navigate(`/devices/${d.deviceId}`)}>
                   <td>
                     <div style={{ fontWeight: 500 }}>{d.name}</div>
                     <div className="mono" style={{ fontSize: 10, marginTop: 1 }}>{d.id}</div>

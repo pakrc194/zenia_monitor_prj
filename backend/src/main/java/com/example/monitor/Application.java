@@ -9,15 +9,15 @@ import org.springframework.core.env.Environment;
 public class Application {
 
 	public static void main(String[] args) {
-		System.out.println("Working dir: " + System.getProperty("user.dir"));
+//		System.out.println("Working dir: " + System.getProperty("user.dir"));
 		
 		SpringApplication app = new SpringApplication(Application.class);
         ConfigurableApplicationContext ctx = app.run(args);
 		
 		Environment env = ctx.getEnvironment();
-        System.out.println("▶ DB_URL  : " + env.getProperty("DB_URL"));
-        System.out.println("▶ DB_USER : " + env.getProperty("DB_USER"));
-        System.out.println("▶ DB_PW   : " + env.getProperty("DB_PW"));
+//        System.out.println("▶ DB_URL  : " + env.getProperty("DB_URL"));
+//        System.out.println("▶ DB_USER : " + env.getProperty("DB_USER"));
+//        System.out.println("▶ DB_PW   : " + env.getProperty("DB_PW"));
 	}
 
 }

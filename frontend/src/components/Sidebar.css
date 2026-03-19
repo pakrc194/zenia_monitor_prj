@@ -19,13 +19,17 @@
   opacity: 0.15;
 }
 
+/* 로고 */
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 20px 16px;
   border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .15s;
 }
+.sidebar-logo:hover { background: var(--bg-hover); }
 
 .logo-icon {
   font-size: 22px;
@@ -33,7 +37,6 @@
   line-height: 1;
   filter: drop-shadow(0 0 8px var(--accent-cyan));
 }
-
 .logo-title {
   font-family: var(--font-cond);
   font-size: 17px;
@@ -42,7 +45,6 @@
   color: var(--text-primary);
 }
 .logo-title span { color: var(--accent-cyan); }
-
 .logo-sub {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -51,6 +53,7 @@
   margin-top: 1px;
 }
 
+/* 시스템 상태 */
 .sidebar-system {
   display: flex;
   align-items: center;
@@ -61,7 +64,6 @@
   font-family: var(--font-mono);
   border-bottom: 1px solid var(--border);
 }
-
 .sys-dot {
   width: 6px; height: 6px;
   border-radius: 50%;
@@ -70,6 +72,7 @@
   animation: pulse 2s infinite;
 }
 
+/* 네비 */
 .sidebar-nav {
   flex: 1;
   padding: 12px 8px;
@@ -77,14 +80,13 @@
   flex-direction: column;
   gap: 2px;
 }
-
 .nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
   border-radius: 6px;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
@@ -93,34 +95,18 @@
   position: relative;
   transition: all .15s;
   font-family: var(--font-ui);
-  font-size: 13px;
 }
-
 .nav-item:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
-
 .nav-item.active {
   background: rgba(0, 212, 255, 0.08);
   color: var(--accent-cyan);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.15);
 }
-
-.nav-icon {
-  font-size: 14px;
-  width: 18px;
-  text-align: center;
-  line-height: 1;
-}
-
-.nav-label {
-  font-family: var(--font-cond);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
+.nav-icon { font-size: 14px; width: 18px; text-align: center; line-height: 1; }
+.nav-label { font-family: var(--font-cond); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
 .nav-indicator {
   position: absolute;
   right: 0; top: 50%;
@@ -131,22 +117,92 @@
   box-shadow: 0 0 8px var(--accent-cyan);
 }
 
+/* 하단 푸터 */
 .sidebar-footer {
-  padding: 14px 16px;
   border-top: 1px solid var(--border);
-  text-align: center;
+  padding: 12px 0 0;
 }
 
+/* 시계 */
+.footer-clock {
+  text-align: center;
+  padding: 0 16px 12px;
+}
 .footer-time {
   font-family: var(--font-mono);
   font-size: 20px;
   color: var(--text-mono);
   letter-spacing: 0.05em;
 }
-
 .footer-date {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  margin-top: 3px;
+  margin-top: 2px;
+}
+
+/* 구분선 */
+.footer-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 0;
+}
+
+/* 유저 영역 */
+.footer-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  transition: background .15s;
+}
+.footer-user:hover { background: var(--bg-hover); }
+
+.user-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-cond);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg-base);
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-role {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--accent-cyan);
+  letter-spacing: 0.1em;
+  margin-top: 1px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  border-radius: 5px;
+  color: var(--text-muted);
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.logout-btn:hover {
+  border-color: var(--ng-color);
+  color: var(--ng-color);
+  background: rgba(255, 61, 87, 0.08);
 }

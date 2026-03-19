@@ -9,28 +9,29 @@ const NAV_ITEMS = [
   { path: "/alarms",     icon: "◬", label: "알람" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ user, onLogout }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
 
   useEffect(() => {
-    const tick = () => setTime(new Date().toLocaleTimeString("ko-KR", { hour12: false }));
+    const tick = () => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString("ko-KR", { hour12: false }));
+      setDate(now.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }));
+    };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
-  const today = new Date().toLocaleDateString("ko-KR", {
-    year: "numeric", month: "2-digit", day: "2-digit",
-  });
-
-  // 현재 경로가 nav 항목의 path로 시작하면 active
   const isActive = (path) => location.pathname.startsWith(path);
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo"  onClick={() => navigate("/dashboard")}>
+      {/* 로고 */}
+      <div className="sidebar-logo" onClick={() => navigate("/dashboard")}>
         <span className="logo-icon">▣</span>
         <div>
           <div className="logo-title">VISION<span>MES</span></div>
@@ -38,11 +39,13 @@ export default function Sidebar() {
         </div>
       </div>
 
+      {/* 시스템 상태 */}
       <div className="sidebar-system">
         <div className="sys-dot" />
         <span>시스템 정상 운영 중</span>
       </div>
 
+      {/* 네비게이션 */}
       <nav className="sidebar-nav">
         {NAV_ITEMS.map(item => (
           <button
@@ -57,9 +60,30 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      {/* 하단 - 유저 정보 + 시간 */}
       <div className="sidebar-footer">
-        <div className="footer-time">{time}</div>
-        <div className="footer-date">{today}</div>
+        {/* 시간 */}
+        <div className="footer-clock">
+          <div className="footer-time">{time}</div>
+          <div className="footer-date">{date}</div>
+        </div>
+
+        {/* 구분선 */}
+        <div className="footer-divider" />
+
+        {/* 유저 정보 */}
+        <div className="footer-user">
+          <div className="user-avatar">
+            {user?.name?.charAt(0).toUpperCase() || "U"}
+          </div>
+          <div className="user-info">
+            <div className="user-name">{user?.name || "사용자"}</div>
+            <div className="user-role">{user?.role || "OPERATOR"}</div>
+          </div>
+          <button className="logout-btn" onClick={onLogout} title="로그아웃">
+            ⏻
+          </button>
+        </div>
       </div>
     </aside>
   );

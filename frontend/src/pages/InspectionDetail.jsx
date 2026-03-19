@@ -108,11 +108,11 @@ export default function InspectionDetail() {
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--ok-color)" }}>
           <div className="stat-label">OK</div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ok-color)", marginTop: 6 }}>{stats.ok}</div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ok-color)", marginTop: 6 }}>{stats.ok.toLocaleString()}</div>
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--ng-color)" }}>
           <div className="stat-label">NG</div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ng-color)", marginTop: 6 }}>{stats.ng}</div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ng-color)", marginTop: 6 }}>{stats.ng.toLocaleString()}</div>
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--warn-color)" }}>
           <div className="stat-label">NG율</div>
