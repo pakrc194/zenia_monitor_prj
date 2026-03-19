@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, Outlet } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
@@ -11,56 +11,95 @@ import InspectionDetail from "./pages/InspectionDetail";
 import Alarms from "./pages/Alarms";
 import "./App.css";
 import api from "./data/api";
+import UserList from "./pages/UserList";
 
-export default function App() {
-  const [user, setUser] = useState(null);
+const decodeToken = (token) => {
+  try {
+    const payload = token.split(".")[1];
+    return JSON.parse(atob(payload));
+  } catch {
+    return null;
+  }
+};
 
-  const handleLogin  = (userInfo) => setUser(userInfo);
-  const handleLogout = async () => {
-    const response = await api.post("/auth/logout")
-    console.log(response)
+const getValidToken = () => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) return false;
+
+  const decoded = decodeToken(token);
+  if (!decoded) return false;
+
+  const isExpired = decoded.exp * 1000 < Date.now();
+  if (isExpired) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("myInfo");
-    setUser(null)
-  };
+    return false;
+  }
 
-  useEffect(()=>{
-    const token = localStorage.getItem("accessToken")
-    if(token) {
-      const decoded = jwtDecode(token);
-      const isExpired = decoded.exp * 1000 < Date.now();
-      if(isExpired) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-      } else {
-        let myInfo = JSON.parse(localStorage.getItem("myInfo"))
-        // console.log(myInfo)
-        setUser(myInfo)
-      }
-    }
-  },[])
+  return true;
+};
 
-
-  // 로그인 안 된 상태
-  if (!user) return <Login onLogin={handleLogin} />;
-
+export default function App() {
   return (
     <BrowserRouter>
-      <div className="app-shell">
-        <Sidebar user={user} onLogout={handleLogout} />
-        <main className="main-content">
-          <Routes>
-            <Route path="/"               element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard"      element={<Dashboard />} />
-            <Route path="/devices"        element={<DeviceList />} />
-            <Route path="/devices/:id"    element={<DeviceDetail />} />
-            <Route path="/inspection"     element={<Inspection />} />
-            <Route path="/inspection/:id" element={<InspectionDetail />} />
-            <Route path="/alarms"         element={<Alarms />} />
-          </Routes>
-        </main>
-      </div>
+      <AppInner />
     </BrowserRouter>
+  );
+}
+
+function AppInner() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (getValidToken()) {
+      const savedUser = localStorage.getItem("myInfo");
+      if (savedUser) setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
+
+  const handleLogin = (userInfo) => {
+    localStorage.setItem("myInfo", JSON.stringify(userInfo));
+    setUser(userInfo);
+    navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("myInfo");
+    setUser(null);
+    navigate("/login");
+  };
+
+  if (loading) return null;
+
+  return (
+    <Routes>
+      <Route path="/login" element={
+        user ? <Navigate to="/dashboard" replace /> : <Login onLogin={handleLogin} />
+      } />
+      <Route path="/" element={
+        user ? <div className="app-shell">
+          <Sidebar user={user} onLogout={handleLogout} />
+          <main className="main-content">
+            <Outlet />
+          </main>
+        </div> : <Navigate to="/login" replace />
+      }>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard"      element={<Dashboard />} />
+        <Route path="devices"        element={<DeviceList />} />
+        <Route path="devices/:id"    element={<DeviceDetail />} />
+        <Route path="inspection"     element={<Inspection />} />
+        <Route path="inspection/:id" element={<InspectionDetail />} />
+        <Route path="alarms"         element={<Alarms />} />
+        <Route path="users"          element={<UserList />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }

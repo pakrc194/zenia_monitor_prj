@@ -31,7 +31,6 @@ public class AuthController {
     
     @PostMapping("/login")
     public UserDTO login(@RequestBody UserDTO user) {
-    	System.out.println(user);
     	return tokenService.login(user);
     }
 

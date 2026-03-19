@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { DEVICES, INSPECTIONS_BY_DEVICE, ALARMS } from "../data/mockData";
 import DonutChart from "../components/DonutChart";
 import { useEffect, useState } from "react";
 import api from "../data/api";
@@ -38,7 +37,7 @@ export default function InspectionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [device, setDevice] = useState({})
-  const [stats, setStats] = useState([])
+  const [stats, setStats] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(()=>{
@@ -51,34 +50,23 @@ export default function InspectionDetail() {
         const response = await api.get(`/inspection/status/${id}`)
         console.log(response)
         setStats(processInspectionData(response))
-        setIsLoading(false)
+        
     }
-
-    fetchDeviceDetail();
-    fetchStatusDetail();
+    // 두 요청 동시에 완료 기다리도록 수정
+    const fetchAll = async () => {
+      await Promise.all([fetchDeviceDetail(), fetchStatusDetail()])
+      setIsLoading(false)
+    }
+    fetchAll()
   },[])
 
-  if(isLoading) {
+  if(isLoading || !stats) {
     return <div>불러오는중 ..</div>
   }
     
-
-  //const device = DEVICES.find(d => d.id === id);
-  // const stats = INSPECTIONS_BY_DEVICE[id] || { ok: 0, ng: 0 };
-
   const total = stats.ok + stats.ng
   const okRate = total ? (stats.ok / total * 100).toFixed(1) : "0.0";
   const ngRate = total ? (stats.ng / total * 100).toFixed(1) : "0.0";
-
-  // 해당 장비 관련 알람
-  const relatedAlarms = ALARMS.filter(a => device && a.device === device.name)
-    .sort((a, b) => b.time.localeCompare(a.time));
-
-  const SEV = {
-    critical: { label: "CRITICAL", color: "var(--ng-color)",   bg: "rgba(255,61,87,.1)" },
-    warning:  { label: "WARNING",  color: "var(--warn-color)", bg: "rgba(255,145,0,.08)" },
-    info:     { label: "INFO",     color: "var(--accent-blue)",bg: "rgba(33,150,243,.08)" },
-  };
 
   if (!device) {
     return (
@@ -108,11 +96,11 @@ export default function InspectionDetail() {
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--ok-color)" }}>
           <div className="stat-label">OK</div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ok-color)", marginTop: 6 }}>{stats.ok.toLocaleString()}</div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ok-color)", marginTop: 6 }}>{stats.ok?stats.ok.toLocaleString():0}</div>
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--ng-color)" }}>
           <div className="stat-label">NG</div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ng-color)", marginTop: 6 }}>{stats.ng.toLocaleString()}</div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 28, color: "var(--ng-color)", marginTop: 6 }}>{stats.ng?stats.ng.toLocaleString():0}</div>
         </div>
         <div className="card" style={{ borderTop: "2px solid var(--warn-color)" }}>
           <div className="stat-label">NG율</div>

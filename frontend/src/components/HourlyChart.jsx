@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { HOURLY_DATA } from "../data/mockData";
 import api from "../data/api";
 import { useParams } from "react-router-dom";
 
@@ -32,9 +31,6 @@ export default function HourlyChart() {
   },[selectedDate])
 
 
-
-
-  const data = HOURLY_DATA[String(dayOffset)] || HOURLY_DATA["0"];
   const maxVal = Math.max(...hourlyStats?.map(d => d.ok + d.ng), 1);
 
   const W = 780, H = 140, PAD_L = 36, PAD_B = 28, PAD_R = 12, PAD_T = 10;

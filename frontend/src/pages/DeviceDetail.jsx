@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { DEVICES } from "../data/mockData";
 import api from "../data/api";
 import { useEffect, useState } from "react";
 import { formatDate, formatDay } from "../utils/formatDate";
@@ -142,12 +141,10 @@ export default function DeviceDetail() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>시각</th>
+              <th style={{ width: "20%" }}>시각</th>
               <th>상태</th>
-              <th>CPU</th>
-              <th style={{ width: "20%" }}>CPU 게이지</th>
-              <th>메모리</th>
-              <th style={{ width: "20%" }}>메모리 게이지</th>
+              <th style={{ width: "30%" }}>CPU 사용량</th>
+              <th style={{ width: "30%" }}>메모리 사용량</th>
               <th>온도</th>
             </tr>
           </thead>
@@ -161,19 +158,7 @@ export default function DeviceDetail() {
                     {STATUS_LABEL[log.status]}
                   </span>
                 </td>
-                <td>
-                  <span style={{
-                    fontFamily: "var(--font-mono)", fontSize: 13,
-                    color: log.cpuUsage >= 85 ? "var(--ng-color)" : log.cpuUsage >= 70 ? "var(--warn-color)" : "var(--ok-color)"
-                  }}>{log.cpuUsage}%</span>
-                </td>
                 <td><GaugeBar value={log.cpuUsage} warn={70} danger={85} /></td>
-                <td>
-                  <span style={{
-                    fontFamily: "var(--font-mono)", fontSize: 13,
-                    color: log.memoryUsage >= 90 ? "var(--ng-color)" : log.memoryUsage >= 75 ? "var(--warn-color)" : "var(--ok-color)"
-                  }}>{log.memoryUsage}%</span>
-                </td>
                 <td><GaugeBar value={log.memoryUsage} warn={75} danger={90} /></td>
                 <td>
                   <span style={{

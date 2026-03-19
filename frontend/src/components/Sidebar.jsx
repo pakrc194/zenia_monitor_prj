@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import "./Sidebar.css";
 
 const NAV_ITEMS = [
-  { path: "/dashboard",  icon: "⬡", label: "대시보드" },
-  { path: "/devices",    icon: "◈", label: "장비 목록" },
-  { path: "/inspection", icon: "◉", label: "검사 현황" },
-  { path: "/alarms",     icon: "◬", label: "알람" },
+  { path: "/dashboard",  icon: "⬡", label: "대시보드", role: "user" },
+  { path: "/devices",    icon: "◈", label: "장비 목록", role: "user" },
+  { path: "/inspection", icon: "◉", label: "검사 현황", role: "user" },
+  { path: "/alarms",     icon: "◬", label: "알람", role: "user" },
+  { path: "/users",      icon: "♣", label: "회원 관리", role: "admin"}
 ];
+
+const ROLE_IDX = ["admin", "manager", "user"]
 
 export default function Sidebar({ user, onLogout }) {
   const location = useLocation();
@@ -47,7 +50,7 @@ export default function Sidebar({ user, onLogout }) {
 
       {/* 네비게이션 */}
       <nav className="sidebar-nav">
-        {NAV_ITEMS.map(item => (
+        {NAV_ITEMS.filter(n=>ROLE_IDX.indexOf(user.role) <= ROLE_IDX.indexOf(n.role)).map(item => (
           <button
             key={item.path}
             className={`nav-item ${isActive(item.path) ? "active" : ""}`}

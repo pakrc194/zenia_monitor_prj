@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { INSPECTIONS_BY_DEVICE, DEVICES } from "../data/mockData";
 import DonutChart from "../components/DonutChart";
 import api from "../data/api";
 

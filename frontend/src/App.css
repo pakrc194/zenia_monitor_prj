@@ -177,9 +177,11 @@ body {
 .badge.WARNING .badge-dot { background: var(--warn-color); }
 .badge.ERROR { background: rgba(255,61,87,.12); color: var(--ng-color); }
 .badge.ERROR .badge-dot { background: var(--ng-color); }
+.badge.user { background: rgba(0,230,118,.12); color: var(--ok-color); }
+.badge.admin { background: rgba(255,145,0,.12); color: var(--warn-color); }
 
 /* Tables */
-.data-table { width: 100%; border-collapse: collapse; }
+.data-table { width: 100%; border-collapse: collapse;}
 .data-table th {
   font-family: var(--font-cond);
   font-size: 11px;

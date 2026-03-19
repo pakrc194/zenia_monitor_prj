@@ -1,6 +1,5 @@
 import StatCard from "../components/StatCard";
 import HourlyChart from "../components/HourlyChart";
-import { SUMMARY, ALARMS, DEVICES } from "../data/mockData";
 import { useEffect, useState } from "react";
 import api from "../data/api";
 import { STATUS_LABEL } from "../utils/constants";
