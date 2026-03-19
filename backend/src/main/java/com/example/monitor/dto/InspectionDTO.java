@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class InspectionDTO {
 	int deviceId;
-	String name;
+	String name, date;
 	
 	String productId, result, defectType;
 	Date resultAt;

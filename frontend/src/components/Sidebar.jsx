@@ -30,7 +30,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo">
+      <div className="sidebar-logo"  onClick={() => navigate("/dashboard")}>
         <span className="logo-icon">▣</span>
         <div>
           <div className="logo-title">VISION<span>MES</span></div>

@@ -4,11 +4,14 @@ import { SUMMARY, ALARMS, DEVICES } from "../data/mockData";
 import { useEffect, useState } from "react";
 import api from "../data/api";
 import { STATUS_LABEL } from "../utils/constants";
+import { formatDate } from "../utils/formatDate";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-  const recentAlarms = ALARMS.slice(0, 5);
-
+  const navigate = useNavigate();
   const [deviceList, setDeviceList] = useState([]);
+  const [alarms, setAlarms] = useState([]);
+  const [statusTotal, setStatusTotal] = useState([])
 
   useEffect(()=>{
     const fecthDeviceList = async () => {
@@ -16,8 +19,23 @@ export default function Dashboard() {
       // console.log(response)
       setDeviceList(response)
     }
+    const fetchAlarms = async () => {
+      const response = await api.get("alarm/list")
+      setAlarms(response)
+    }
+    const fetchStatusTotal = async () => {
+      const response = await api.get("inspection/total")
+      setStatusTotal(response)
+    }
+
     fecthDeviceList();
+    fetchAlarms();
+    fetchStatusTotal();
   },[])
+
+  const statusOk = statusTotal.find(st=>st.result==="OK")?.count
+  const statusNG = statusTotal.find(st=>st.result==="NG")?.count
+  const total = statusOk+statusNG;
 
   return (
     <div className="page">
@@ -36,12 +54,12 @@ export default function Dashboard() {
           label="전체 장비"
           value={deviceList.length}
           color="var(--accent-cyan)"
-          sub={`운영 중 ${deviceList.filter(d => d.status !== "idle").length}대`}
+          sub={`운영 중 ${deviceList.filter(d => d.status !== "IDLE").length}대`}
         />
         <StatCard
           icon="◉"
           label="위험 장비"
-          value={SUMMARY.ng}
+          value={deviceList.filter(d=>d.status==="ERROR").length}
           color="var(--ng-color)"
           sub="즉시 확인 필요"
           subColor="var(--ng-color)"
@@ -49,16 +67,16 @@ export default function Dashboard() {
         <StatCard
           icon="◬"
           label="활성 알람"
-          value={SUMMARY.alarms}
+          value={alarms.filter(al=>al.level==="CRITICAL").length}
           color="var(--warn-color)"
           sub="Critical 기준"
         />
         <StatCard
           icon="◫"
           label="금일 총 검사"
-          value={SUMMARY.totalInspections.toLocaleString()}
+          value={total.toLocaleString()}
           color="var(--accent-blue)"
-          sub="OK 96.0% | NG 4.0%"
+          sub={`OK ${(statusOk*100/total).toFixed(1)}% | NG ${(statusNG*100/total).toFixed(1)}%`}
         />
       </div>
 
@@ -81,8 +99,8 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {deviceList.map(d => (
-                <tr key={d.id}>
+              {deviceList.map((d,k) => (
+                <tr key={k} onClick={() => navigate(`/devices/${d.deviceId}`)}>
                   <td>
                     <div style={{ fontWeight: 500 }}>{d.name}</div>
                     <div className="mono" style={{ fontSize: 10, marginTop: 1 }}>{d.id}</div>
@@ -104,16 +122,16 @@ export default function Dashboard() {
         <div className="card">
           <div className="section-title" style={{ marginBottom: 14 }}>최근 알람</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {recentAlarms.map(a => (
-              <div key={a.id} style={{
+            {alarms.map((a,k) => (
+              <div key={k} style={{
                 padding: "10px 12px",
                 background: "var(--bg-base)",
                 borderRadius: 6,
-                borderLeft: `3px solid ${a.severity === "critical" ? "var(--ng-color)" : a.severity === "warning" ? "var(--warn-color)" : "var(--accent-blue)"}`,
+                borderLeft: `3px solid ${a.level === "CRITICAL" ? "var(--ng-color)" : a.level === "WARNING" ? "var(--warn-color)" : "var(--accent-blue)"}`,
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontWeight: 600, fontSize: 12 }}>{a.device}</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>{a.time.split(" ")[1]}</span>
+                  <span style={{ fontWeight: 600, fontSize: 12 }}>{a.name}</span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)" }}>{formatDate(a.alarmAt)}</span>
                 </div>
                 <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>{a.message}</div>
               </div>

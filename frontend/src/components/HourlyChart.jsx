@@ -1,18 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HOURLY_DATA } from "../data/mockData";
+import api from "../data/api";
+import { useParams } from "react-router-dom";
 
-const DAYS = ["오늘", "어제", "2일 전", "3일 전"];
+const formatHyphenDate = (date = new Date()) => {
+  const yyyy = date.getFullYear();
+  const mm   = String(date.getMonth() + 1).padStart(2, "0");
+  const dd   = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
 
-function formatDate(offset) {
-  const d = new Date();
-  d.setDate(d.getDate() + offset);
-  return d.toLocaleDateString("ko-KR", { month: "2-digit", day: "2-digit", weekday: "short" });
-}
 
 export default function HourlyChart() {
   const [dayOffset, setDayOffset] = useState(0);
+  const [hourlyStats, setHourlyStats] = useState([])
+  const [selectedDate, setSelectedDate] = useState(formatHyphenDate())
+  const {id} = useParams();
+
+  useEffect(()=>{
+    const fecthHourlyStats = async () => {
+      const response = await api.get("/inspection/hourlyStats", {
+        params:{
+          date:selectedDate,
+          deviceId: id==null? 0 : id
+        }
+      })
+      // console.log(response)
+      setHourlyStats(response)
+    }
+    fecthHourlyStats();
+  },[selectedDate])
+
+
+
+
   const data = HOURLY_DATA[String(dayOffset)] || HOURLY_DATA["0"];
-  const maxVal = Math.max(...data.map(d => d.ok + d.ng), 1);
+  const maxVal = Math.max(...hourlyStats?.map(d => d.ok + d.ng), 1);
 
   const W = 780, H = 140, PAD_L = 36, PAD_B = 28, PAD_R = 12, PAD_T = 10;
   const chartW = W - PAD_L - PAD_R;
@@ -24,14 +47,14 @@ export default function HourlyChart() {
     label: Math.round(maxVal * r),
   }));
 
+
+
   return (
     <div>
       <div className="section-header">
         <span className="section-title">시간별 검사 현황</span>
         <div className="date-nav">
-          <button onClick={() => setDayOffset(o => Math.max(o - 1, -3))} title="이전">‹</button>
-          <span className="date-label">{formatDate(dayOffset)}</span>
-          <button onClick={() => setDayOffset(o => Math.min(o + 1, 0))} title="다음">›</button>
+          <input type="date" value={selectedDate} onChange={(e)=>setSelectedDate(e.target.value)}/>
         </div>
       </div>
 
@@ -56,7 +79,7 @@ export default function HourlyChart() {
           ))}
 
           {/* Bars */}
-          {data.map((d, i) => {
+          {hourlyStats.map((d, i) => {
             const x = PAD_L + i * barW;
             const totalH = ((d.ok + d.ng) / maxVal) * chartH;
             const okH = (d.ok / maxVal) * chartH;
@@ -109,7 +132,7 @@ export default function HourlyChart() {
           </div>
         ))}
         <div style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)" }}>
-          총 {data.reduce((a, d) => a + d.ok + d.ng, 0).toLocaleString()} 건
+          총 {hourlyStats.reduce((a, d) => a + d.ok + d.ng, 0).toLocaleString()} 건
         </div>
       </div>
     </div>

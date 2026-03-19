@@ -20,8 +20,8 @@ public class DeviceController {
 	DeviceService deviceService;
 	
 	@GetMapping("list")
-	List<DeviceDTO> deviceList(@ModelAttribute PageRequest pageReq) {
-		return deviceService.list(pageReq);
+	List<DeviceDTO> deviceList(@ModelAttribute PageRequest pageReq, @ModelAttribute DeviceDTO dto) {
+		return deviceService.list(pageReq, dto);
 	}
 	
 	@GetMapping("/detail/{deviceId}")

@@ -4,6 +4,7 @@ import api from "../data/api";
 import { useEffect, useState } from "react";
 import { formatDate, formatDay } from "../utils/formatDate";
 import { STATUS_LABEL } from "../utils/constants";
+import HourlyChart from "../components/HourlyChart";
 
 
 function GaugeBar({ value, max = 100, warn = 70, danger = 85 }) {

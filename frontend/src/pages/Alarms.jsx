@@ -1,26 +1,43 @@
-import { useState } from "react";
-import { ALARMS } from "../data/mockData";
+import { useEffect, useState } from "react";
+import api from "../data/api";
+import { formatDate } from "../utils/formatDate";
 
 const SEV_CONFIG = {
-  critical: { label: "CRITICAL", color: "var(--ng-color)", bg: "rgba(255,61,87,.1)" },
-  warning:  { label: "WARNING",  color: "var(--warn-color)", bg: "rgba(255,145,0,.08)" },
-  info:     { label: "INFO",     color: "var(--accent-blue)", bg: "rgba(33,150,243,.08)" },
+  CRITICAL: { label: "CRITICAL", color: "var(--ng-color)", bg: "rgba(255,61,87,.1)" },
+  WARNING:  { label: "WARNING",  color: "var(--warn-color)", bg: "rgba(255,145,0,.08)" },
+  INFO:     { label: "INFO",     color: "var(--accent-blue)", bg: "rgba(33,150,243,.08)" },
 };
 
 const FILTER_OPTIONS = ["전체", "CRITICAL", "WARNING", "INFO"];
 
 export default function Alarms() {
   const [filter, setFilter] = useState("전체");
+  const [alarms, setAlarms] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sorted = [...ALARMS].sort((a, b) => b.time.localeCompare(a.time));
-  const filtered = sorted.filter(a =>
-    filter === "전체" || SEV_CONFIG[a.severity].label === filter
+  useEffect(()=>{
+    setIsLoading(true);
+    const fecthAlarms = async () => {
+      const response = await api.get("/alarm/list")
+      setAlarms(response)
+      setIsLoading(false);
+    }
+    fecthAlarms();
+  },[])
+
+  if(isLoading) {
+    return <div>불러오는중..</div>
+  }
+
+
+  const filtered = alarms?.filter(a =>
+    filter === "전체" || SEV_CONFIG[a.level].label === filter
   );
 
   const counts = {
-    critical: ALARMS.filter(a => a.severity === "critical").length,
-    warning:  ALARMS.filter(a => a.severity === "warning").length,
-    info:     ALARMS.filter(a => a.severity === "info").length,
+    CRITICAL: alarms?.filter(a => a.level === "CRITICAL").length,
+    WARNING:  alarms?.filter(a => a.level === "WARNING").length,
+    INFO:     alarms?.filter(a => a.level === "INFO").length,
   };
 
   return (
@@ -75,7 +92,6 @@ export default function Alarms() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>알람 ID</th>
               <th>발생 시각</th>
               <th>장비</th>
               <th>등급</th>
@@ -83,13 +99,12 @@ export default function Alarms() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(a => {
-              const cfg = SEV_CONFIG[a.severity];
+            {filtered.map((a,k) => {
+              const cfg = SEV_CONFIG[a.level];
               return (
-                <tr key={a.id}>
-                  <td className="mono" style={{ fontSize: 11 }}>{a.id}</td>
-                  <td className="mono" style={{ fontSize: 11, whiteSpace: "nowrap" }}>{a.time}</td>
-                  <td style={{ fontWeight: 500, whiteSpace: "nowrap", fontSize: 12 }}>{a.device}</td>
+                <tr key={k}>
+                  <td className="mono" style={{ fontSize: 11, whiteSpace: "nowrap" }}>{formatDate(a.alarmAt)}</td>
+                  <td style={{ fontWeight: 500, whiteSpace: "nowrap", fontSize: 12 }}>{a.name}</td>
                   <td>
                     <span style={{
                       display: "inline-block",

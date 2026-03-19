@@ -15,12 +15,12 @@ public class DeviceService {
 	@Autowired
 	DeviceMapper deviceMapper;
 	
-	public List<DeviceDTO> list(PageRequest pageReq) {
-		return deviceMapper.list(pageReq);
+	public List<DeviceDTO> list(PageRequest pageReq, DeviceDTO dto) {
+		return deviceMapper.list(0);
 	}
 	
 	public DeviceDTO detail(DeviceDTO dto) {
-		return deviceMapper.detail(dto);
+		return deviceMapper.list(dto.getDeviceId()).getFirst();
 	}
 	
 	public List<DeviceDTO> findAllByDeviceId(DeviceDTO dto) {
