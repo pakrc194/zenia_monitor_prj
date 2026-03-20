@@ -30,6 +30,6 @@ public interface RefreshTokenMapper {
 	@Delete("delete from refresh_token where expired_at %lt; now()")
 	int deleteExpired();
 	
-	@Select("select * from user where username = #{username} and password=#{password}")
+	@Select("select * from user where username = #{username} and password=#{password} and role != 'idle'")
 	UserDTO login(UserDTO dto);
 }

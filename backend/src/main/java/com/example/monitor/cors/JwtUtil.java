@@ -78,7 +78,7 @@ public class JwtUtil {
             parseClaims(token);
             return true;
         } catch (ExpiredJwtException e) {
-            throw e; // 만료는 별도 처리
+            throw e; 
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

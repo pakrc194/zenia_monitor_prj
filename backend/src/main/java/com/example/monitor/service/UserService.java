@@ -17,4 +17,20 @@ public class UserService {
 	public List<UserDTO> list() {
 		return userMapper.findAll();
 	}
+	
+	public int signup(UserDTO dto) {
+		if(userMapper.findByUsername(dto.getUsername()).size()>0) {
+			return 0;
+		} else {
+			return userMapper.save(dto);
+		}
+	}
+	
+	public UserDTO findByUsername(UserDTO dto) {
+		return userMapper.findByUsername(dto.getUsername()).getFirst();
+	}
+	
+	public int update(UserDTO dto) {
+		return userMapper.updateUser(dto);
+	}
 }

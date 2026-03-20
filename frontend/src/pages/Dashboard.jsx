@@ -42,7 +42,7 @@ export default function Dashboard() {
         <div className="page-title-icon">⬡</div>
         <h1 className="page-title">대시보드</h1>
         <span style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)" }}>
-          마지막 갱신: 2025-03-18 14:32:01
+          {/* 마지막 갱신: 2025-03-18 14:32:01 */}
         </span>
       </div>
 

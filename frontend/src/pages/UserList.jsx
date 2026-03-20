@@ -4,7 +4,7 @@ import { formatDate, formatDay } from "../utils/formatDate";
 import { useNavigate } from "react-router-dom";
 import { ROLE_LABEL, STATUS_LABEL } from "../utils/constants";
 
-const FILTER_OPTIONS = ["전체", "관리자", "회원", "휴먼"];
+const FILTER_OPTIONS = ["전체", "관리자", "회원", "휴면"];
 
 export default function UserList() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function UserList() {
 
       {/* Summary badges */}
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-        {Object.entries({ user: "회원", admin: "관리자", ERROR: "위험", IDLE: "유휴" }).map(([k, v]) => {
+        {Object.entries({ user: "회원", admin: "관리자", idle: "휴면" }).map(([k, v]) => {
           const count = userList?.filter(d => d.role === k).length;
           return (
             <div key={k} className="card" style={{ padding: "12px 16px", flex: 1 }}>
@@ -87,7 +87,7 @@ export default function UserList() {
           </thead>
           <tbody>
             {filtered?.map((d,k) => (
-              <tr key={k}>
+              <tr key={k} style={{cursor: "pointer"}} onClick={()=>navigate(`/users/detail/${d.username}`)}>
                 
                 <td className="mono" style={{ fontWeight: 500 }}>{d.username}</td>
                 <td style={{ color: "var(--text-secondary)" }}>{d.name}</td>
@@ -112,6 +112,25 @@ export default function UserList() {
         <div style={{ marginTop: 12, fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-muted)" }}>
           {filtered?.length} / {userList?.length} 회원 표시 중
         </div>
+        <button
+                onClick={() => navigate("/users/signup")}
+                style={{
+                  padding: "4px 10px",
+                  borderRadius: 5,
+                  border: "1px solid",
+                  borderColor: "var(--accent-cyan)",
+                  background: "rgba(0,212,255,.1)",
+                  color: "var(--accent-cyan)",
+                  fontFamily: "var(--font-cond)",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  cursor: "pointer",
+                  transition: "all .15s",
+                }}
+              >
+                회원 추가
+        </button>
       </div>
     </div>
   );

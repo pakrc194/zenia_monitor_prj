@@ -12,6 +12,8 @@ import Alarms from "./pages/Alarms";
 import "./App.css";
 import api from "./data/api";
 import UserList from "./pages/UserList";
+import Signup from "./pages/Signup";
+import UserDetail from "./pages/UserDetail";
 
 const decodeToken = (token) => {
   try {
@@ -98,6 +100,8 @@ function AppInner() {
         <Route path="inspection/:id" element={<InspectionDetail />} />
         <Route path="alarms"         element={<Alarms />} />
         <Route path="users"          element={<UserList />} />
+        <Route path="users/signup"   element={<Signup />} />
+        <Route path="users/detail/:username"    element={<UserDetail />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

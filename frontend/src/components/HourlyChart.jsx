@@ -24,7 +24,7 @@ export default function HourlyChart() {
           deviceId: id==null? 0 : id
         }
       })
-      // console.log(response)
+      console.log("fecthHourlyStats",response)
       setHourlyStats(response)
     }
     fecthHourlyStats();
@@ -76,7 +76,7 @@ export default function HourlyChart() {
 
           {/* Bars */}
           {hourlyStats.map((d, i) => {
-            const x = PAD_L + i * barW;
+            const x = PAD_L + d.hour * barW;
             const totalH = ((d.ok + d.ng) / maxVal) * chartH;
             const okH = (d.ok / maxVal) * chartH;
             const ngH = (d.ng / maxVal) * chartH;
@@ -101,14 +101,14 @@ export default function HourlyChart() {
                   />
                 )}
                 {/* Hour label */}
-                {i % 3 === 0 && (
+                {(
                   <text
                     x={x + barW / 2} y={H - 4}
                     textAnchor="middle"
                     fontSize="9"
                     fill="var(--text-muted)"
                     fontFamily="var(--font-mono)"
-                  >{String(i).padStart(2, "0")}</text>
+                  >{String(d.hour).padStart(2, "0")}</text>
                 )}
               </g>
             );

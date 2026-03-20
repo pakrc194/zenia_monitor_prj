@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,20 +31,32 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = resolveToken(request);
 
-        if (token != null && jwtUtil.isValid(token)) {
+        if (token != null) {
+            try {
+                if (jwtUtil.isValid(token)) {
+                    String username = jwtUtil.getUsername(token);
+                    String role = jwtUtil.getRole(token);
 
-            String username = jwtUtil.getUsername(token);
-            String role = jwtUtil.getRole(token);
+                    if (role == null || role.isBlank()) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "권한 정보 없음");
+                        return;
+                    }
 
-            
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                    username,
-                    null,
-                    List.of(new SimpleGrantedAuthority(role))
-                );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                    UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                            username, null,
+                            List.of(new SimpleGrantedAuthority(role))
+                        );
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (ExpiredJwtException e) {
+                // 만료 시 401 반환 → React 인터셉터가 refresh 요청
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
+                return;
+            } catch (JwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰");
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
