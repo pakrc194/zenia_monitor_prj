@@ -5,6 +5,26 @@
 
 ---
 
+## 📸 화면 구성
+
+| 로그인 | 대시보드 |
+|--------|----------|
+| ![login](screenshot/login.png) | ![dashboard](screenshot/dashboard.png) |
+
+| 장비 목록 | 장비 상세 |
+|-----------|----------|
+| ![deviceList](screenshot/deviceList.png) | ![deviceDetail](screenshot/deviceDetail.png) |
+
+| 검사 현황 | 검사 상세 |
+|-----------|----------|
+| ![Inspection](screenshot/Inspection.png) | ![InspectionDetail](screenshot/InspectionDetail.png) |
+
+| 알람 | 사용자 관리 |
+|------|------------|
+| ![alarm](screenshot/alarm.png) | ![userList](screenshot/userList.png) |
+
+---
+
 ## 📁 프로젝트 구조
 
 ```
