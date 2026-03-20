@@ -22,7 +22,6 @@ zenia_monitor_prj/
 │           └── mapper/        # MyBatis XML 쿼리
 │
 └── frontend/
-    ├── public/
     └── src/
         ├── assets/            # 이미지 등 정적 파일
         ├── components/        # 공통 컴포넌트
