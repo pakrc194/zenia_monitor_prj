@@ -12,7 +12,7 @@ import com.example.monitor.dto.UserDTO;
 @Mapper
 public interface UserMapper {
 	
-	@Select("select * from user")
+	@Select("select username, name, role, created_at, expired_at from user")
 	List<UserDTO> findAll();
 	
 	@Insert("""
@@ -21,7 +21,7 @@ public interface UserMapper {
 			""")
 	int save(UserDTO dto);
 	
-	@Select("select * from user where username = #{username}")
+	@Select("select username, name, role, created_at, expired_at from user where username = #{username}")
 	List<UserDTO> findByUsername(String username);
 	
 	@Update("""
