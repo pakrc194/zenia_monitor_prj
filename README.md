@@ -8,9 +8,27 @@
 ## 📁 프로젝트 구조
 
 ```
-monitor_prj/
-├── backend/   # Spring Boot
-└── frontend/  # React
+zenia_monitor_prj/
+├── backend/
+│   └── src/main/
+│       ├── java/com/example/monitor/
+│       │   ├── controller/    # REST API 엔드포인트
+│       │   ├── cors/          # Spring Security / JWT 설정
+│       │   ├── dto/           # 데이터 전송 객체
+│       │   ├── mapper/        # MyBatis 인터페이스
+│       │   └── service/       # 비즈니스 로직
+│       └── resources/
+│           ├── application.yml
+│           └── mapper/        # MyBatis XML 쿼리
+│
+└── frontend/
+    ├── public/
+    └── src/
+        ├── assets/            # 이미지 등 정적 파일
+        ├── components/        # 공통 컴포넌트
+        ├── data/              # axios 설정
+        ├── pages/             # 페이지 컴포넌트
+        └── utils/             # 유틸 함수
 ```
 
 ---
