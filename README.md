@@ -18,8 +18,7 @@ zenia_monitor_prj/
 │       │   ├── mapper/        # MyBatis 인터페이스
 │       │   └── service/       # 비즈니스 로직
 │       └── resources/
-│           ├── application.yml
-│           └── mapper/        # MyBatis XML 쿼리
+│           └── application.yaml
 │
 └── frontend/
     └── src/
