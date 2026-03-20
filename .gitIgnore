@@ -6,8 +6,6 @@
 # ─── Frontend (React) ────────────────
 frontend/node_modules/
 frontend/build/
-frontend/.env
-frontend/.env.*
 
 # ─── Backend (Spring Boot) ───────────
 backend/.gradle/
