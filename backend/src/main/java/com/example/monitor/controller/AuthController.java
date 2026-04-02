@@ -3,6 +3,7 @@ package com.example.monitor.controller;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class AuthController {
 
     private final JwtUtil jwtUtil;
 
-    @Autowired
+    @Resource
     RefreshTokenService tokenService;
     
     @PostMapping("/login")

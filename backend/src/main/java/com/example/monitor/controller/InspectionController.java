@@ -3,6 +3,7 @@ package com.example.monitor.controller;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +20,7 @@ import com.example.monitor.service.InspectionService;
 @RestController
 @RequestMapping("/inspection")
 public class InspectionController {
-	@Autowired
+	@Resource
 	InspectionService inspectionService;
 	
 	@GetMapping("status")

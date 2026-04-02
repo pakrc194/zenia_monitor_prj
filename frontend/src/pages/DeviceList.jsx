@@ -15,7 +15,7 @@ export default function DeviceList() {
   useEffect(()=>{
     const fecthDeviceList = async () => {
       const response = await api.get("/device/list")
-      // console.log(response)
+      console.log(response)
       setDeviceList(response)
     }
     fecthDeviceList();
